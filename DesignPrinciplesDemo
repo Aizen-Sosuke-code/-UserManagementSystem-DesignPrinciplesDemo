@@ -1,1 +1,148 @@
+using System;
+
+namespace DesignPrinciplesDemo
+{
+    // -----------------------------
+    // 1. Применение DRY
+    // -----------------------------
+    public class Logger
+    {
+
+        public void Log(string message, string level)
+        {
+            Console.WriteLine($"{level.ToUpper()}: {message}");
+        }
+
+        public void LogError(string message) => Log(message, "Error");
+        public void LogWarning(string message) => Log(message, "Warning");
+        public void LogInfo(string message) => Log(message, "Info");
+    }
+
+    public class DatabaseConfig
+    {
+
+        public string ConnectionString { get; } = 
+            "Server=myServer;Database=myDb;User Id=myUser;Password=myPass;";
+    }
+
+    public class DatabaseService
+    {
+        private readonly DatabaseConfig _config;
+        public DatabaseService(DatabaseConfig config)
+        {
+            _config = config;
+        }
+
+        public void Connect()
+        {
+
+            Console.WriteLine($"Connecting to DB with {_config.ConnectionString}");
+
+        }
+    }
+
+    public class LoggingService
+    {
+        private readonly DatabaseConfig _config;
+        public LoggingService(DatabaseConfig config)
+        {
+            _config = config;
+        }
+
+        public void Log(string message)
+        {
+
+            Console.WriteLine($"Logging to DB ({_config.ConnectionString}): {message}");
+        }
+    }
+
+    // -----------------------------
+    // 2. Применение KISS
+    // -----------------------------
+    public class NumberProcessor
+    {
+
+        public void PrintPositiveNumbers(int[] numbers)
+        {
+            if (numbers == null || numbers.Length == 0) return;
+
+            foreach (var n in numbers)
+            {
+                if (n > 0)
+                    Console.WriteLine(n);
+            }
+        }
+
+        public int Divide(int a, int b)
+        {
+            if (b == 0) return 0;
+            return a / b;
+        }
+    }
+
+    // -----------------------------
+    // 3. Применение YAGNI
+    // -----------------------------
+
+    public class User
+    {
+        public string Name { get; set; }
+        public string Email { get; set; }
+
+    }
+
+    public class FileReader
+    {
+
+        public string ReadFile(string filePath)
+        {
+            return System.IO.File.ReadAllText(filePath);
+        }
+    }
+
+    public class ReportGenerator
+    {
+
+        public void GeneratePdfReport()
+        {
+            Console.WriteLine("PDF report generated");
+        }
+    }
+
+    // -----------------------------
+    // 4. Тестирование
+    // -----------------------------
+    class Program
+    {
+        static void Main(string[] args)
+        {
+          
+            Logger logger = new Logger();
+            logger.LogError("Ошибка подключения");
+            logger.LogInfo("Система запущена");
+
+            DatabaseConfig config = new DatabaseConfig();
+            DatabaseService dbService = new DatabaseService(config);
+            LoggingService logService = new LoggingService(config);
+
+            dbService.Connect();
+            logService.Log("Тестовый лог");
+
+            NumberProcessor processor = new NumberProcessor();
+            int[] numbers = { 5, -3, 0, 8 };
+            processor.PrintPositiveNumbers(numbers);
+            Console.WriteLine(processor.Divide(10, 2));
+            Console.WriteLine(processor.Divide(10, 0));
+
+            User user = new User { Name = "Алибек", Email = "a@mail.com" };
+            Console.WriteLine($"User: {user.Name}, Email: {user.Email}");
+
+            ReportGenerator report = new ReportGenerator();
+            report.GeneratePdfReport();
+
+            Console.WriteLine("\nНажмите любую клавишу для выхода...");
+            Console.ReadKey();
+        }
+    }
+}
 
