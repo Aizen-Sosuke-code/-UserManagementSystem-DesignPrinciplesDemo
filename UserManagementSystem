@@ -1,1 +1,111 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace UserManagementSystem
+{
+    // -----------------------------
+    // 1. Класс User
+    // -----------------------------
+    public class User
+    {
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string Role { get; set; }
+
+        public User(string name, string email, string role)
+        {
+            Name = name;
+            Email = email;
+            Role = role;
+        }
+
+        public void ShowInfo()
+        {
+            Console.WriteLine($"Имя: {Name}, Email: {Email}, Роль: {Role}");
+        }
+    }
+
+    // -----------------------------
+    // 2. Класс UserManager
+    // -----------------------------
+    public class UserManager
+    {
+        private List<User> users = new List<User>();
+
+        public void AddUser(User user)
+        {
+            users.Add(user);
+            Console.WriteLine($"Пользователь {user.Name} добавлен.");
+        }
+
+        public void RemoveUser(string email)
+        {
+            var user = users.FirstOrDefault(u => u.Email == email);
+            if (user != null)
+            {
+                users.Remove(user);
+                Console.WriteLine($"Пользователь {user.Name} удалён.");
+            }
+            else
+            {
+                Console.WriteLine($"Пользователь с email {email} не найден.");
+            }
+        }
+
+        public void UpdateUser(string email, string newName, string newRole)
+        {
+            var user = users.FirstOrDefault(u => u.Email == email);
+            if (user != null)
+            {
+                user.Name = newName;
+                user.Role = newRole;
+                Console.WriteLine($"Пользователь {email} обновлён.");
+            }
+            else
+            {
+                Console.WriteLine($"Пользователь с email {email} не найден.");
+            }
+        }
+
+        public void ShowAllUsers()
+        {
+            Console.WriteLine("\nСписок пользователей:");
+            foreach (var user in users)
+            {
+                user.ShowInfo();
+            }
+        }
+    }
+
+    // -----------------------------
+    // 3. Тестирование
+    // -----------------------------
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            UserManager manager = new UserManager();
+
+            User user1 = new User("Алибек", "a@mail.com", "Admin");
+            User user2 = new User("Мадина", "m@mail.com", "User");
+
+            manager.AddUser(user1);
+            manager.AddUser(user2);
+
+            manager.ShowAllUsers();
+
+            Console.WriteLine("\nОбновление роли Мадины на Admin:");
+            manager.UpdateUser("m@mail.com", "Мадина", "Admin");
+
+            Console.WriteLine("\nУдаление пользователя Алибек:");
+            manager.RemoveUser("a@mail.com");
+
+            manager.ShowAllUsers();
+
+            Console.WriteLine("\nНажмите любую клавишу для выхода...");
+            Console.ReadKey();
+        }
+    }
+}
 
